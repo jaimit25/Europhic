@@ -470,7 +470,7 @@ class _AddfeedState extends State<Addfeed> {
       ),
       actions: <Widget>[
         FlatButton(
-          color: Colors.indigo[900],
+          color: Colors.black,
           child: new Text("Yes", style: TextStyle(color: Colors.white)),
           onPressed: () async {
             if (value == '' || value == null) {
@@ -484,7 +484,10 @@ class _AddfeedState extends State<Addfeed> {
               SharedPreferences prefs = await SharedPreferences.getInstance();
               String saveuid = prefs.getString('uid');
               // String createRoom = getRoomId(saveuid, uuid);
-              FirebaseFirestore.instance.collection('Post').doc(value).set({
+              FirebaseFirestore.instance
+                  .collection('Post')
+                  .doc(value + email)
+                  .set({
                 'text': value,
                 'name': name,
                 'image': imageurl == '' ? '' : imageurl,
@@ -500,12 +503,14 @@ class _AddfeedState extends State<Addfeed> {
                 'lat': lat == null ? 34.0479 : lat,
                 'lng': lng == null ? 100.6197 : lng,
                 'address': Add == null || Add == '' ? 'Address' : Add,
-                'time': Timestamp.now().toString()
+                'time': Timestamp.now().toString(),
+                'checkvideo': '',
+                'video': '',
               }).then((value) {
                 _text.text = '';
                 print('Photo Uploaded');
                 Fluttertoast.showToast(
-                    msg: 'Post Shared ✅',
+                    msg: 'Post Shared ',
                     timeInSecForIosWeb: 2,
                     textColor: Colors.white,
                     backgroundColor: Colors.black,

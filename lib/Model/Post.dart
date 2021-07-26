@@ -7,6 +7,8 @@ class Post {
   var email;
   var comments;
   var DateTime;
+  var checkvideo;
+  var video;
 
   var lat, lng, likes, track, address;
   Post(
@@ -21,7 +23,9 @@ class Post {
       this.lng,
       this.track,
       this.address,
-      this.name});
+      this.name,
+      this.checkvideo,
+      this.video});
 
   factory Post.fromDocument(doc) {
     return Post(
@@ -36,6 +40,8 @@ class Post {
         lng: doc['lng'],
         track: doc['track'],
         address: doc['address'],
-        name: doc['name']);
+        name: doc['name'],
+        checkvideo: doc['checkvideo'],
+        video: doc['video']);
   }
 }

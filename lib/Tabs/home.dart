@@ -1,5 +1,6 @@
 import 'dart:async';
-
+import 'package:video_player/video_player.dart';
+import 'package:chewie/chewie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -86,20 +87,24 @@ class _homeState extends State<home> {
         .get()
         .then((querySnapshot) {
       querySnapshot.docs.forEach((doc) {
-        Postlist.add(Post(
-          userPhoto: doc['userPhoto'],
-          text: doc['text'],
-          type: doc['type'],
-          image: doc['image'],
-          email: doc['email'],
-          comments: doc['comments'],
-          DateTime: doc['DateTime'],
-          lat: doc['lat'],
-          lng: doc['lng'],
-          track: doc['track'],
-          address: doc['address'],
-          name: doc['name'],
-        ));
+        Postlist.add(
+          Post(
+            userPhoto: doc['userPhoto'],
+            text: doc['text'],
+            type: doc['type'],
+            image: doc['image'],
+            email: doc['email'],
+            comments: doc['comments'],
+            DateTime: doc['DateTime'],
+            lat: doc['lat'],
+            lng: doc['lng'],
+            track: doc['track'],
+            address: doc['address'],
+            name: doc['name'],
+            checkvideo: doc['checkvideo'],
+            video: doc['video'],
+          ),
+        );
       });
     });
     print(Postlist.length);
@@ -342,6 +347,8 @@ class _homeState extends State<home> {
                         image: feedList[index].image,
                         userPhoto: feedList[index].userPhoto,
                         name: feedList[index].name,
+                        checkvideo: feedList[index].checkvideo,
+                        video: feedList[index].video,
                       );
                     },
                   ),
@@ -393,6 +400,8 @@ class Tile extends StatefulWidget {
   var email;
   var comments;
   var DateTime;
+  var checkvideo;
+  var video;
   Tile({
     @required this.userPhoto,
     @required this.text,
@@ -402,17 +411,22 @@ class Tile extends StatefulWidget {
     @required this.email,
     @required this.comments,
     @required this.DateTime,
+    @required this.checkvideo,
+    @required this.video,
   });
   @override
   _TileState createState() => _TileState(
-      comments: this.comments,
-      DateTime: this.DateTime,
-      text: this.text,
-      type: this.type,
-      email: this.email,
-      userPhoto: this.userPhoto,
-      image: this.image,
-      name: this.name);
+        comments: this.comments,
+        DateTime: this.DateTime,
+        text: this.text,
+        type: this.type,
+        email: this.email,
+        userPhoto: this.userPhoto,
+        image: this.image,
+        name: this.name,
+        checkvideo: this.checkvideo,
+        video: this.video,
+      );
 }
 
 class _TileState extends State<Tile> {
@@ -423,8 +437,14 @@ class _TileState extends State<Tile> {
   String image;
   var email;
   var comments;
-
   var DateTime;
+  var checkvideo;
+  var video;
+
+  VideoPlayerController videoPlayerController;
+  // final bool looping;
+  // final bool autoplay;
+
   _TileState({
     @required this.userPhoto,
     @required this.text,
@@ -434,6 +454,8 @@ class _TileState extends State<Tile> {
     @required this.comments,
     @required this.DateTime,
     @required this.name,
+    @required this.checkvideo,
+    @required this.video,
   });
 
   bool open = true;
@@ -444,13 +466,38 @@ class _TileState extends State<Tile> {
 
   // bool a = false;
   bool a = true;
+  var _chewieController;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    @override
+    void initState() {
+      super.initState();
+    }
 
     App_theme();
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _chewieController.dispose();
+  }
+
+  // var assetVideo = VideoItems(
+  //   videoPlayerController: VideoPlayerController.asset(
+  //     'assets/video_6.mp4',
+  //   ),
+  //   looping: true,
+  //   autoplay: true,
+  // );
+  // var networkVideo = VideoItems(
+  //   videoPlayerController: VideoPlayerController.network(
+  //       'https://assets.mixkit.co/videos/preview/mixkit-a-girl-blowing-a-bubble-gum-at-an-amusement-park-1226-large.mp4'),
+  //   looping: false,
+  //   autoplay: true,
+  // );
 
   @override
   Widget build(BuildContext context) {
@@ -624,7 +671,7 @@ class _TileState extends State<Tile> {
                             width: 300,
                             child: Text(
                               text == null || text == "" ? '...' : text,
-                              maxLines: 3,
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                   color: Colors.white,
