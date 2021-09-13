@@ -14,12 +14,12 @@ class VideoPlayer extends StatelessWidget {
       ),
       body: ListView(
         children: <Widget>[
-          VideoItems(
-            videoPlayerController: VideoPlayerController.network(
-                'https://assets.mixkit.co/videos/preview/mixkit-a-girl-blowing-a-bubble-gum-at-an-amusement-park-1226-large.mp4'),
-            looping: false,
-            autoplay: true,
-          ),
+          // VideoItems(
+          //   videoPlayerController: VideoPlayerController.network(
+          //       'https://assets.mixkit.co/videos/preview/mixkit-a-girl-blowing-a-bubble-gum-at-an-amusement-park-1226-large.mp4'),
+          //   looping: false,
+          //   autoplay: true,
+          // ),
         ],
       ),
     );

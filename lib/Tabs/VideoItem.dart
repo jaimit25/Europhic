@@ -27,8 +27,10 @@ class _VideoItemsState extends State<VideoItems> {
     super.initState();
     _chewieController = ChewieController(
       videoPlayerController: widget.videoPlayerController,
-      aspectRatio: 5 / 8,
-      // showControls: false,
+      // aspectRatio: 5 / 8,
+      // aspectRatio: 0.95,
+      aspectRatio: 0.8,
+      showControls: false,
       // allowFullScreen: false,
       // allowMuting: false,
       autoInitialize: true,
@@ -46,18 +48,31 @@ class _VideoItemsState extends State<VideoItems> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    _chewieController.dispose();
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        print("clicked pause button");
+        // widget.videoPlayerController.pause();
+        widget.videoPlayerController.pause();
+      },
+      child: Container(
+        height: 400,
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.all(0),
+        margin: EdgeInsets.all(0),
+        // color: Colors.green,
+        // padding: const EdgeInsets.all(8.0),
+        child: Chewie(
+          controller: _chewieController,
+        ),
+      ),
+    );
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Chewie(
-        controller: _chewieController,
-      ),
-    );
+  void dispose() {
+    super.dispose();
+    _chewieController.dispose();
+    // _chewieController.pause();
   }
 }

@@ -504,7 +504,7 @@ class _AddfeedState extends State<Addfeed> {
                 'lng': lng == null ? 100.6197 : lng,
                 'address': Add == null || Add == '' ? 'Address' : Add,
                 'time': Timestamp.now().toString(),
-                'checkvideo': '',
+                'checkvideo': false,
                 'video': '',
               }).then((value) {
                 _text.text = '';

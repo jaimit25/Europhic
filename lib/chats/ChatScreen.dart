@@ -478,6 +478,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 });
               },
               onFieldSubmitted: (value) async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                String mail = prefs.getString('email');
                 setState(() {
                   message = value;
                 });
@@ -554,9 +556,6 @@ class _ChatScreenState extends State<ChatScreen> {
                       print('hi there');
                     });
                   }).then((value) async {
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    String mail = prefs.getString('email');
                     String createRoom = getRoomId(mail, useremail);
                     FirebaseFirestore.instance
                         .collection('ChatRoom')
@@ -569,7 +568,28 @@ class _ChatScreenState extends State<ChatScreen> {
                       'time': Timestamp.now().toString(),
                     });
                   });
-
+                  FirebaseFirestore.instance
+                      .collection('Followers')
+                      .doc(useremail)
+                      .collection('followers')
+                      .doc(mail)
+                      .update({
+                    'userimg': latestphoto,
+                  });
+                  FirebaseFirestore.instance
+                      .collection('Following')
+                      .doc(useremail)
+                      .collection('following')
+                      .doc(mail)
+                      .update({
+                    'photo': latestphoto,
+                  });
+                  FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(useremail)
+                      .update({
+                    'extra': 1,
+                  });
                   chatController.clear();
                 }
               },
@@ -705,6 +725,12 @@ class _ChatScreenState extends State<ChatScreen> {
                     .doc(mail)
                     .update({
                   'photo': latestphoto,
+                });
+                FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(useremail)
+                    .update({
+                  'extra': 1,
                 });
                 chatController.clear();
               }

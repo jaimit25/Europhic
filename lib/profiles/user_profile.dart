@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socialmedia/FollowersAndFollowing/Followers.dart';
+import 'package:socialmedia/chats/ChatScreen.dart';
+import 'package:socialmedia/chats/ViewImage.dart';
 
 class user_profile extends StatefulWidget {
   // const user_profile({ Key? key }) : super(key: key);
@@ -162,17 +164,17 @@ class _user_profileState extends State<user_profile> {
                       fontWeight: FontWeight.w800),
                 ),
                 actions: [
-                  GestureDetector(
-                    onTap: () => scaffoldKey.currentState.openEndDrawer(),
-                    child: Container(
-                      margin: EdgeInsets.only(right: 20),
-                      child: Icon(
-                        Icons.person_add,
-                        size: 25,
-                        color: theme_icon,
-                      ),
-                    ),
-                  ),
+                  // GestureDetector(
+                  //   onTap: () => scaffoldKey.currentState.openEndDrawer(),
+                  //   child: Container(
+                  //     margin: EdgeInsets.only(right: 20),
+                  //     child: Icon(
+                  //       Icons.person_add,
+                  //       size: 25,
+                  //       color: theme_icon,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
                 centerTitle: true,
                 leadingWidth: 70,
@@ -578,27 +580,107 @@ class _user_profileState extends State<user_profile> {
                       //   padding: EdgeInsets.all(8),
                       //   child:
                       checkFollowers
-                          ? GridView.builder(
-                              physics: ScrollPhysics(),
-                              shrinkWrap: true,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      childAspectRatio: 3 / 4,
-                                      crossAxisSpacing: 8,
-                                      mainAxisSpacing: 8),
-                              itemCount: 35,
-                              itemBuilder: (BuildContext ctx, index) {
-                                return Container(
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: NetworkImage(
-                                              "https://i.pinimg.com/originals/6d/62/f0/6d62f0fb9edea6121981088f95ef5e53.jpg")),
-                                      borderRadius: BorderRadius.circular(15)),
-                                );
-                              })
+                          ? StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection('Post')
+                                  .where('email', isEqualTo: useremail)
+                                  .snapshots(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Center(
+                                      child: const Text('Loading events...'));
+                                } else {
+                                  return GridView.builder(
+                                    shrinkWrap: true,
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 3),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      //  snapshot.data.documents[index]['text'],
+                                      return Container(
+                                          child: GestureDetector(
+                                        onTap: () {},
+                                        child: Container(
+                                          margin: EdgeInsets.only(
+                                              left: 5, right: 5, top: 1),
+                                          child: Column(
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              ViewImage(snapshot
+                                                                          .data
+                                                                          .documents[
+                                                                      index]
+                                                                  ['image'])));
+                                                },
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(0.0),
+                                                  child: Container(
+                                                    height: 119,
+                                                    width: 120,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.rectangle,
+                                                      image: DecorationImage(
+                                                        fit: BoxFit.cover,
+                                                        image: snapshot.data.documents[
+                                                                            index][
+                                                                        'image'] ==
+                                                                    "" ||
+                                                                snapshot.data.documents[
+                                                                            index]
+                                                                        [
+                                                                        'image'] ==
+                                                                    null
+                                                            ? AssetImage(
+                                                                'assets/images/EU.png')
+                                                            : NetworkImage(snapshot
+                                                                    .data
+                                                                    .documents[
+                                                                index]['image']),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ));
+                                    },
+                                    itemCount: snapshot.data.docs.length,
+                                  );
+                                }
+                              },
+                            )
+
+                          // GridView.builder(
+                          //     physics: ScrollPhysics(),
+                          //     shrinkWrap: true,
+                          //     gridDelegate:
+                          //         SliverGridDelegateWithFixedCrossAxisCount(
+                          //             crossAxisCount: 3,
+                          //             childAspectRatio: 3 / 4,
+                          //             crossAxisSpacing: 8,
+                          //             mainAxisSpacing: 8),
+                          //     itemCount: 35,
+                          //     itemBuilder: (BuildContext ctx, index) {
+                          //       return Container(
+                          //         alignment: Alignment.center,
+                          //         decoration: BoxDecoration(
+                          //             image: DecorationImage(
+                          //                 fit: BoxFit.cover,
+                          //                 image: NetworkImage(
+                          //                     "https://i.pinimg.com/originals/6d/62/f0/6d62f0fb9edea6121981088f95ef5e53.jpg")),
+                          //             borderRadius: BorderRadius.circular(15)),
+                          //       );
+                          //     })
                           : Container(),
                       // ),
                     ],
@@ -610,6 +692,36 @@ class _user_profileState extends State<user_profile> {
         },
       ),
     );
+  }
+
+  void DialogBoxDelete(context, id) {
+    var baseDialog = AlertDialog(
+      title: new Text(
+        "Delete",
+        // style: txt.andika,
+      ),
+      content: Container(
+        child: Text(
+          'Delete Post',
+          // style: txt.andikasmall,
+        ),
+      ),
+      actions: <Widget>[
+        FlatButton(
+          color: Colors.black,
+          child: new Text("Yes", style: TextStyle(color: Colors.white)),
+          onPressed: () async {
+            FirebaseFirestore.instance.collection('Post').doc(id).delete();
+            setState(() {
+              // postcount = postcount - 1;
+            });
+            Navigator.pop(context);
+          },
+        ),
+      ],
+    );
+
+    showDialog(context: context, builder: (BuildContext context) => baseDialog);
   }
 
   App_theme() async {

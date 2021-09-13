@@ -115,11 +115,12 @@ class NavigationState extends State<Navigation> {
                 title: Text('Friends', style: styl),
               ),
               BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.account_circle,
-                    color: theme_icon,
-                  ),
-                  title: Text('You', style: styl)),
+                icon: Icon(
+                  Icons.account_circle,
+                  color: theme_icon,
+                ),
+                title: Text('You', style: styl),
+              ),
             ],
             currentIndex: bottomSelectedIndex,
             fixedColor: theme_main,

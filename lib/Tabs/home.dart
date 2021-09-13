@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:flutter/services.dart';
+import 'package:socialmedia/Tabs/VideoItem.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -28,7 +30,7 @@ class _homeState extends State<home> {
   bool a = true;
   var email;
   List<Post> feedList = [];
-
+  var mssg;
   App_theme() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // prefs.setString('name', nameCont.text);
@@ -228,68 +230,87 @@ class _homeState extends State<home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: theme_main,
-      appBar: AppBar(
-        backgroundColor: theme_main,
-        elevation: 0,
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (Context) => Addfeed()));
-          },
-          child: Icon(
-            Icons.add_circle_outline,
-            size: 30,
-            color: theme_icon,
-          ),
-        ),
-        title: Text(
-          'Europhic',
-          style: GoogleFonts.andika(
-            textStyle: TextStyle(
-                color: theme_text,
-                letterSpacing: 2,
-                fontSize: 20,
-                fontWeight: FontWeight.w600),
-          ),
-        ),
-        actions: [
-          GestureDetector(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => chatpages()));
-            },
-            child: Container(
-              margin: EdgeInsets.only(right: 20),
-              child: Icon(
-                Icons.chat_outlined,
-                size: 25,
-                color: theme_icon,
+    return StreamBuilder(
+      stream:
+          FirebaseFirestore.instance.collection('users').doc(email).snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          var doc = snapshot.data;
+          mssg = doc['extra'];
+          return Scaffold(
+            backgroundColor: theme_main,
+            appBar: AppBar(
+              backgroundColor: theme_main,
+              elevation: 0,
+              leading: GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (Context) => Addfeed()));
+                },
+                child: Icon(
+                  Icons.add_circle_outline,
+                  size: 30,
+                  color: theme_icon,
+                ),
               ),
+              title: Text(
+                'Euphoric',
+                style: GoogleFonts.andika(
+                  textStyle: TextStyle(
+                      color: theme_text,
+                      letterSpacing: 2,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
+              actions: [
+                GestureDetector(
+                  onTap: () {
+                    FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(email)
+                        .update({
+                      'extra': 0,
+                    });
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => chatpages()));
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(right: 20, top: 10),
+                    child: Stack(
+                      children: [
+                        Icon(
+                          Icons.chat_outlined,
+                          size: 25,
+                          color: theme_icon,
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(left: 16, top: 7),
+                          height: 16,
+                          width: 16,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color:
+                                doc['extra'] == 0 ? Colors.red : Colors.green,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+              centerTitle: true,
+              leadingWidth: 70,
             ),
-          ),
-        ],
-        centerTitle: true,
-        leadingWidth: 70,
-      ),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('users')
-            .doc(email)
-            .snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            var doc = snapshot.data;
-            return ListView(
+            body: ListView(
               shrinkWrap: true,
               children: [
                 Container(
-                  height: 150,
+                  height: 100,
                   // width: double.infinity,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -314,6 +335,10 @@ class _homeState extends State<home> {
                                   image:
                                       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOOFMe-CzzMAgkPdsGK1wsKLtoF33HXGK98A&usqp=CAU',
                                 ),
+                                storycircle(
+                                  image:
+                                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOOFMe-CzzMAgkPdsGK1wsKLtoF33HXGK98A&usqp=CAU',
+                                ),
                               ],
                             ),
                           ),
@@ -323,7 +348,7 @@ class _homeState extends State<home> {
                   ),
                 ),
                 Container(
-                  color: Colors.grey[900],
+                  color: a ? Colors.grey[900] : Colors.grey[100],
                   child: ListView.builder(
                     primary: false,
                     scrollDirection: Axis.vertical,
@@ -337,7 +362,9 @@ class _homeState extends State<home> {
                       //       color: Colors.white,
                       //     ),
                       //     child: Text("${feedList[index].name}"));
-
+                      if (feedList.length == 0) {
+                        return Center(child: CircularProgressIndicator());
+                      }
                       return Tile(
                         comments: feedList[index].comments,
                         email: feedList[index].email,
@@ -354,10 +381,10 @@ class _homeState extends State<home> {
                   ),
                 ),
               ],
-            );
-          }
-        },
-      ),
+            ),
+          );
+        }
+      },
     );
   }
 
@@ -502,195 +529,316 @@ class _TileState extends State<Tile> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: GestureDetector(
-        onTap: () {
-          // setState(() {
-          //   open = !open;
-          // });
-        },
-        child: Container(
-          // padding: EdgeInsets.only(left: 220, top: 50, bottom: 50),
-          margin: EdgeInsets.only(top: 0, left: 15, right: 15, bottom: 15),
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(image
-                    // 'https://i.pinimg.com/originals/6d/62/f0/6d62f0fb9edea6121981088f95ef5e53.jpg'
-                    ),
-                fit: BoxFit.cover,
-              ),
-              color: theme_main,
-              borderRadius: BorderRadius.all(Radius.circular(15))),
-          // height: 420,
-          height: 420,
-          // width: 315,
-          width: MediaQuery.of(context).size.width,
-          child: Stack(
-            children: [
-              open
-                  ? Align(
-                      alignment: Alignment.topRight,
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.grey.withOpacity(0.5),
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(50),
-                                bottomLeft: Radius.circular(50))),
-                        margin: EdgeInsets.only(top: 50, bottom: 50),
-                        width: 65,
-                        // height: 260,
-                        height: 280,
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              // open = !open;
-                            });
-                          },
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                height: 40,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.5),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(50))),
-                                child: Icon(
-                                  Icons.favorite,
-                                  color: Colors.black,
-                                  size: 25,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Container(
-                                height: 40,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.5),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(50))),
-                                child: Icon(
-                                  Icons.chat_bubble,
-                                  color: Colors.black,
-                                  size: 25,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Container(
-                                height: 40,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.5),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(50))),
-                                child: Icon(
-                                  Icons.bookmark,
-                                  color: Colors.black,
-                                  size: 25,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Container(
-                                  height: 40,
-                                  width: 40,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.5),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(50))),
-                                  child: Transform.rotate(
-                                    angle: 340 * 3.14 / 180,
-                                    child: Icon(
-                                      Icons.send,
-                                      color: Colors.black,
-                                      size: 25,
-                                    ),
-                                  )),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                  : Container(),
-              Container(
-                child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Container(
-                    height: 150,
-                    decoration: BoxDecoration(
-                        // border: Border.all(color: Colors.red)
-                        ),
-                    child: Column(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.only(left: 10),
-                          margin: EdgeInsets.only(top: 40),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                height: 50,
-                                width: 50,
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(50)),
-                                    image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: NetworkImage(
-                                            'https://media.istockphoto.com/photos/real-macho-picture-id1014791458?k=6&m=1014791458&s=612x612&w=0&h=5lqphJFPseFoWMG2vrWlUTWl3OfuNiS-1Jd27vt1QjA='))),
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(top: 15, left: 10),
-                                height: 50,
-                                width: 200,
-                                child: Text(
-                                  name,
-                                  // name == null || name == "" ? 'Name' : name,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 0.8,
-                                      fontSize: 17),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Container(
-                            padding: EdgeInsets.only(left: 20, top: 10),
-                            // height: 100,
-                            width: 300,
-                            child: Text(
-                              text == null || text == "" ? '...' : text,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                  letterSpacing: 0.8,
-                                  fontSize: 13),
-                            ),
-                          ),
-                        )
-                      ],
+      // height: 560,
+      width: MediaQuery.of(context).size.width,
+      margin: EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        color: theme_main,
+      ),
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.all(10),
+            child: Row(
+              children: [
+                Container(
+                  height: 60,
+                  width: 60,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: NetworkImage(userPhoto),
                     ),
                   ),
                 ),
-              )
-            ],
+                SizedBox(
+                  width: 20,
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      maxLines: 2,
+                      style: TextStyle(
+                        color: theme_text,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      DateTime.toString().substring(0, 10),
+                      style: TextStyle(
+                        color: a ? Colors.grey : Colors.black,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
+          Container(
+            margin: EdgeInsets.only(top: 10, left: 10, bottom: 10),
+            width: 300,
+            alignment: Alignment.topLeft,
+            child: Text(
+              text,
+              // textAlign: TextAlign.left,
+              maxLines: 2,
+              style: TextStyle(
+                color: theme_text,
+                fontSize: 13,
+              ),
+            ),
+          ),
+          checkvideo
+              ? VideoItems(
+                  videoPlayerController: VideoPlayerController.network(video),
+                  looping: true,
+                  autoplay: true,
+                )
+              : Container(
+                  height: 400,
+                  decoration: BoxDecoration(
+                    // shape: BoxShape.circle,
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(image),
+                    ),
+                  ),
+                ),
+          Container(
+            margin: EdgeInsets.all(10),
+            child: Row(
+              children: [
+                Container(
+                  height: 30,
+                  width: 30,
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(50),
+                    ),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.favorite,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Container(
+                  height: 30,
+                  width: 1,
+                  color: a ? Colors.grey[900] : Colors.grey[300],
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Container(
+                  height: 30,
+                  width: 30,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(50),
+                    ),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.comment_rounded,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
+
+    // return Container(
+    //   child: GestureDetector(
+    //     onTap: () {
+    //       // setState(() {
+    //       //   open = !open;
+    //       // });
+    //     },
+    //     child: Container(
+    //       // padding: EdgeInsets.only(left: 220, top: 50, bottom: 50),
+    //       margin: EdgeInsets.only(top: 0, left: 15, right: 15, bottom: 15),
+    //       decoration: BoxDecoration(
+    //           image: DecorationImage(
+    //             image: NetworkImage(image
+    //                 // 'https://i.pinimg.com/originals/6d/62/f0/6d62f0fb9edea6121981088f95ef5e53.jpg'
+    //                 ),
+    //             fit: BoxFit.cover,
+    //           ),
+    //           color: theme_main,
+    //           borderRadius: BorderRadius.all(Radius.circular(15))),
+    //       // height: 420,
+    //       height: 420,
+    //       // width: 315,
+    //       width: MediaQuery.of(context).size.width,
+    //       child: Stack(
+    //         children: [
+    //           open
+    //               ? Align(
+    //                   alignment: Alignment.topRight,
+    //                   child: Container(
+    //                     decoration: BoxDecoration(
+    //                         color: Colors.grey.withOpacity(0.5),
+    //                         borderRadius: BorderRadius.only(
+    //                             topLeft: Radius.circular(50),
+    //                             bottomLeft: Radius.circular(50))),
+    //                     margin: EdgeInsets.only(top: 50, bottom: 50),
+    //                     width: 65,
+    //                     // height: 260,
+    //                     height: 280,
+    //                     child: GestureDetector(
+    //                       onTap: () {
+    //                         setState(() {
+    //                           // open = !open;
+    //                         });
+    //                       },
+    //                       child: Column(
+    //                         mainAxisAlignment: MainAxisAlignment.center,
+    //                         crossAxisAlignment: CrossAxisAlignment.center,
+    //                         children: [
+    //                           Container(
+    //                             height: 40,
+    //                             width: 40,
+    //                             decoration: BoxDecoration(
+    //                                 color: Colors.white.withOpacity(0.5),
+    //                                 borderRadius:
+    //                                     BorderRadius.all(Radius.circular(50))),
+    //                             child: Icon(
+    //                               Icons.favorite,
+    //                               color: Colors.red,
+    //                               size: 25,
+    //                             ),
+    //                           ),
+    //                           SizedBox(
+    //                             height: 20,
+    //                           ),
+    //                           Container(
+    //                             height: 40,
+    //                             width: 40,
+    //                             decoration: BoxDecoration(
+    //                                 color: Colors.white.withOpacity(0.5),
+    //                                 borderRadius:
+    //                                     BorderRadius.all(Radius.circular(50))),
+    //                             child: Icon(
+    //                               Icons.bookmark,
+    //                               color: Colors.blue,
+    //                               size: 25,
+    //                             ),
+    //                           ),
+    //                           SizedBox(
+    //                             height: 20,
+    //                           ),
+    //                           Container(
+    //                               height: 40,
+    //                               width: 40,
+    //                               decoration: BoxDecoration(
+    //                                   color: Colors.white.withOpacity(0.5),
+    //                                   borderRadius: BorderRadius.all(
+    //                                       Radius.circular(50))),
+    //                               child: Transform.rotate(
+    //                                 angle: 340 * 3.14 / 180,
+    //                                 child: Icon(
+    //                                   Icons.share_rounded,
+    //                                   color: Colors.pink[400],
+    //                                   size: 25,
+    //                                 ),
+    //                               )),
+    //                         ],
+    //                       ),
+    //                     ),
+    //                   ),
+    //                 )
+    //               : Container(),
+    //           Container(
+    //             child: Align(
+    //               alignment: Alignment.bottomLeft,
+    //               child: Container(
+    //                 height: 150,
+    //                 decoration: BoxDecoration(
+    //                     // border: Border.all(color: Colors.red)
+    //                     ),
+    //                 child: Column(
+    //                   children: [
+    //                     Container(
+    //                       padding: EdgeInsets.only(left: 10),
+    //                       margin: EdgeInsets.only(top: 40),
+    //                       child: Row(
+    //                         mainAxisAlignment: MainAxisAlignment.start,
+    //                         crossAxisAlignment: CrossAxisAlignment.start,
+    //                         children: [
+    //                           Container(
+    //                             height: 50,
+    //                             width: 50,
+    //                             decoration: BoxDecoration(
+    //                                 borderRadius:
+    //                                     BorderRadius.all(Radius.circular(50)),
+    //                                 image: DecorationImage(
+    //                                     fit: BoxFit.cover,
+    //                                     image: NetworkImage(userPhoto))),
+    //                           ),
+    //                           Container(
+    //                             padding: EdgeInsets.only(top: 15, left: 10),
+    //                             height: 50,
+    //                             width: 200,
+    //                             child: Text(
+    //                               name,
+    //                               // name == null || name == "" ? 'Name' : name,
+    //                               style: TextStyle(
+    //                                   color: Colors.white,
+    //                                   fontWeight: FontWeight.w800,
+    //                                   letterSpacing: 0.8,
+    //                                   fontSize: 17),
+    //                             ),
+    //                           )
+    //                         ],
+    //                       ),
+    //                     ),
+    //                     Align(
+    //                       alignment: Alignment.centerLeft,
+    //                       child: Container(
+    //                         padding: EdgeInsets.only(left: 20, top: 10),
+    //                         // height: 100,
+    //                         width: 300,
+    //                         child: Text(
+    //                           text == null || text == "" ? '...' : text,
+    //                           maxLines: 2,
+    //                           overflow: TextOverflow.ellipsis,
+    //                           style: TextStyle(
+    //                               color: Colors.white,
+    //                               fontWeight: FontWeight.w500,
+    //                               letterSpacing: 0.8,
+    //                               fontSize: 13),
+    //                         ),
+    //                       ),
+    //                     )
+    //                   ],
+    //                 ),
+    //               ),
+    //             ),
+    //           )
+    //         ],
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 
   App_theme() async {
