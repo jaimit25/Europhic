@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/sky"
+    android:gravity="center"
+    tools:context=".MainActivity">
+
+
+
+    <TextView
+        android:id="@+id/title_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Background Services"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        android:textSize="30dp"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:defaultFocusHighlightEnabled="false"
+        />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="400dp"/>
+
+
+    <Button
+        android:id="@+id/start"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textColor="#fff"
+        android:text="Start background service"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/roundedbutton"
+        android:layout_marginHorizontal="10dp"
+        android:textSize="13dp"
+        />
+
+    <Button
+        android:id="@+id/stop"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textColor="#fff"
+        android:text="Stop background service"
+        android:background="@drawable/roundedbutton"
+        android:layout_marginHorizontal="10dp"
+        android:textSize="13dp"
+        />
+
+
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>
