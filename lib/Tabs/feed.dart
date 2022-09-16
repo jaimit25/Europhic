@@ -5,9 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geocoder/geocoder.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,48 +37,48 @@ class _AddfeedState extends State<Addfeed> {
     // Timer timer = Timer.periodic(Duration(milliseconds: 900), (Timer t) {
     //   setState(() {});
     // });
-    getUserLocation();
+    // getUserLocation();
     App_theme();
   }
 
-  getUserLocation() async {
-    //call this async method from whereever you need
+  // getUserLocation() async {
+  //   //call this async method from whereever you need
 
-    String error;
-    Location location = new Location();
-    try {
-      myLocation = await location.getLocation();
-    } on PlatformException catch (e) {
-      if (e.code == 'PERMISSION_DENIED') {
-        error = 'please grant permission';
-        print(error);
-      }
-      if (e.code == 'PERMISSION_DENIED_NEVER_ASK') {
-        error = 'permission denied- please enable it from app settings';
-        print(error);
-      }
-      myLocation = null;
-    }
-    // currentLocation = myLocation;
-    final coordinates =
-        new Coordinates(myLocation.latitude, myLocation.longitude);
-    print(myLocation.latitude);
-    print(myLocation.longitude);
-    setState(() {
-      lat = myLocation.latitude;
-      lng = myLocation.longitude;
-    });
-    var addresses =
-        await Geocoder.local.findAddressesFromCoordinates(coordinates);
-    var first = addresses.first;
-    print(
-        ' ${first.locality}, ${first.adminArea},${first.subLocality}, ${first.subAdminArea},${first.addressLine}, ${first.featureName},${first.thoroughfare}, ${first.subThoroughfare}');
-    setState(() {
-      Add =
-          ' ${first.locality}, ${first.adminArea},${first.subLocality}, ${first.subAdminArea},${first.addressLine}, ${first.featureName},${first.thoroughfare}, ${first.subThoroughfare}';
-    });
-    return first;
-  }
+  //   String error;
+  //   Location location = new Location();
+  //   try {
+  //     myLocation = await location.getLocation();
+  //   } on PlatformException catch (e) {
+  //     if (e.code == 'PERMISSION_DENIED') {
+  //       error = 'please grant permission';
+  //       print(error);
+  //     }
+  //     if (e.code == 'PERMISSION_DENIED_NEVER_ASK') {
+  //       error = 'permission denied- please enable it from app settings';
+  //       print(error);
+  //     }
+  //     myLocation = null;
+  //   }
+  //   // currentLocation = myLocation;
+  //   final coordinates =
+  //       new Coordinates(myLocation.latitude, myLocation.longitude);
+  //   print(myLocation.latitude);
+  //   print(myLocation.longitude);
+  //   setState(() {
+  //     lat = myLocation.latitude;
+  //     lng = myLocation.longitude;
+  //   });
+  //   var addresses =
+  //       await Geocoder.local.findAddressesFromCoordinates(coordinates);
+  //   var first = addresses.first;
+  //   print(
+  //       ' ${first.locality}, ${first.adminArea},${first.subLocality}, ${first.subAdminArea},${first.addressLine}, ${first.featureName},${first.thoroughfare}, ${first.subThoroughfare}');
+  //   setState(() {
+  //     Add =
+  //         ' ${first.locality}, ${first.adminArea},${first.subLocality}, ${first.subAdminArea},${first.addressLine}, ${first.featureName},${first.thoroughfare}, ${first.subThoroughfare}';
+  //   });
+  //   return first;
+  // }
 
   App_theme() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -101,26 +101,30 @@ class NavigationState extends State<Navigation> {
             backgroundColor: theme_main,
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.home,
-                  color: theme_icon,
-                ),
-                title: Text('Home', style: styl),
-              ),
+                  icon: Icon(
+                    Icons.home,
+                    color: theme_icon,
+                  ),
+                  label: 'Home'
+                  // title: Text('Home', style: styl),
+                  ),
               BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.person_add,
-                  color: theme_icon,
-                ),
-                title: Text('Friends', style: styl),
-              ),
+                  icon: Icon(
+                    Icons.person_add,
+                    color: theme_icon,
+                  ),
+                  label: 'Friends'
+
+                  // title: Text('Friends', style: styl),
+                  ),
               BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.account_circle,
-                  color: theme_icon,
-                ),
-                title: Text('You', style: styl),
-              ),
+                  icon: Icon(
+                    Icons.account_circle,
+                    color: theme_icon,
+                  ),
+                  label: 'You'
+                  // title: Text('You', style: styl),
+                  ),
             ],
             currentIndex: bottomSelectedIndex,
             fixedColor: theme_main,

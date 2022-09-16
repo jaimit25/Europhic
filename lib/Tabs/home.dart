@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:socialmedia/Tabs/VideoItem.dart';
+import 'package:socialmedia/admin.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -257,14 +258,20 @@ class _homeState extends State<home> {
                   color: theme_icon,
                 ),
               ),
-              title: Text(
-                'Euphoric',
-                style: GoogleFonts.andika(
-                  textStyle: TextStyle(
-                      color: theme_text,
-                      letterSpacing: 2,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600),
+              title: InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (Context) => Admin()));
+                },
+                child: Text(
+                  'Euphoric',
+                  style: GoogleFonts.andika(
+                    textStyle: TextStyle(
+                        color: theme_text,
+                        letterSpacing: 2,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600),
+                  ),
                 ),
               ),
               actions: [
