@@ -1,16 +1,28 @@
-# socialmedia
+# Hello there,
 
-A new Flutter project.
+#### ⚡ Language 
+ - Dart (Flutter)
 
-## Getting Started
+Social Media Application using Firebase-Firestore.
 
-This project is a starting point for a Flutter application.
+## Features 
+ - Followers and Following
+ - Real Time Chat Application
+ - Upload Reels and Post 
+ - Comment on Post
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+#### Talk to me about
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Solving Data structure and algorithm questions in **C, C++ , Java and Dart**
+- Front-end development using **HTML, CSS, JavaScript, XML In Android Java, Flutter **
+- Backend development using **Dart-Flutter, NodeJs(Begineer), Java**
+- Database using **Firebase Firestore, Firebase Realtime Database, MongoDB**
+- Mobile development using **Java, Flutter , React Native(Begineer)**
+- Creating big and small projects using **Flutter and ML Union**
+
+## 🤔 To know More About me !!
+
+- 💬 Ask me about anything and everything.
+- Linkedin : https://www.linkedin.com/in/jaimitkumar-panchal-342883209/
+- 🎯 Check out my Instagram page: [![INSTAGRAM](https://img.shields.io/badge/FOLLOW%20ME-INSTAGRAM-blueviolet?style=flat-square&logo=Instagram&logoColor=white)](https://www.instagram.com/jaimit_panchal/?hl=en)
