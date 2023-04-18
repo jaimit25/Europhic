@@ -648,6 +648,9 @@ class _ChatScreenState extends State<ChatScreen> {
                       .update({
                     'extra': 1,
                   });
+                  setState(() {
+                    imageurl = "";
+                  });
                   chatController.clear();
                 }
               },
@@ -789,6 +792,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     .doc(useremail)
                     .update({
                   'extra': 1,
+                });
+                setState(() {
+                  imageurl = "";
                 });
                 chatController.clear();
               }
