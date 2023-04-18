@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "518754521973",
+    "firebase_url": "https://gdapp-b4966.firebaseio.com",
+    "project_id": "gdapp-b4966",
+    "storage_bucket": "gdapp-b4966.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:518754521973:android:5f5df2e6f5bd2a4575f93c",
+        "android_client_info": {
+          "package_name": "com.example.socialmedia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "518754521973-trlo7pbutdmgnrblc96mdkr5hetmv7r8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHFacshxVqnp68yqVcepQBjQG14msrvxg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "518754521973-trlo7pbutdmgnrblc96mdkr5hetmv7r8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
